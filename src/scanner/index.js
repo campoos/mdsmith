@@ -69,7 +69,6 @@ function scanProjectFiles(projectRoot) {
     for (const file of files) {
       const fullPath = path.join(dir, file)
 
-      // ignorar node_modules e .git
       if (
         fullPath.includes("node_modules") ||
         fullPath.includes(".git")

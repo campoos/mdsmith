@@ -80,7 +80,6 @@ function detectarPorta(scanData) {
     try {
       const content = fs.readFileSync(filePath, "utf-8")
 
-      // 🔎 Regex robusta: pega .listen(...) mesmo com quebra de linha
       const listenRegex = /\.listen\s*\(\s*([\s\S]*?)\)/g
 
       let match
@@ -88,32 +87,20 @@ function detectarPorta(scanData) {
       while ((match = listenRegex.exec(content)) !== null) {
         const rawArgument = match[1].split(",")[0].trim()
 
-        // =============================
-        // ✅ 1️⃣ Número direto
-        // =============================
         const directNumber = rawArgument.match(/^\d+$/)
         if (directNumber) {
           return directNumber[0]
         }
 
-        // =============================
-        // ✅ 2️⃣ Fallback inline
-        // =============================
         const inlineFallback = rawArgument.match(/\|\|\s*(\d+)/)
         if (inlineFallback) {
           return inlineFallback[1]
         }
 
-        // =============================
-        // ✅ 3️⃣ process.env.PORT
-        // =============================
         if (rawArgument.includes("process.env.PORT")) {
           return "process.env.PORT"
         }
 
-        // =============================
-        // ✅ 4️⃣ Resolver variável
-        // =============================
         const variableName = rawArgument.replace(/[^a-zA-Z0-9_]/g, "")
 
         if (!variableName) continue
